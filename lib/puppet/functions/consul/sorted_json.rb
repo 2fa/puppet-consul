@@ -72,6 +72,10 @@ Puppet::Functions.create_function(:'consul::sorted_json') do
     end
 
     sorted_generate = lambda do |obj, quoted|
+      if obj.is_a?(Puppet::Pops::Types::PSensitiveType::Sensitive)
+        obj = obj.unwrap
+      end
+
       case obj
       when NilClass, :undef, Integer, Float, TrueClass, FalseClass, String
         return simple_generate.call(obj, quoted)
@@ -97,6 +101,10 @@ Puppet::Functions.create_function(:'consul::sorted_json') do
     sorted_pretty_generate = lambda do |obj, sorted_pretty_indent_len = 4, level = 0, quoted|
       # Indent length
       indent = ' ' * sorted_pretty_indent_len
+
+      if obj.is_a?(Puppet::Pops::Types::PSensitiveType::Sensitive)
+        obj = obj.unwrap
+      end
 
       case obj
       when NilClass, :undef, Integer, Float, TrueClass, FalseClass, String
